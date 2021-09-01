@@ -24,7 +24,7 @@ export class MulticastComponent {
       share() // === publish + refCount
     );*/
 
-    this.measureValues$ = new ReplaySubject<number>(5);
+    this.measureValues$ = new ReplaySubject<number>(1);
     this.mvs.getValues().pipe(tap(e => console.log(e)))
       .subscribe(this.measureValues$);
 

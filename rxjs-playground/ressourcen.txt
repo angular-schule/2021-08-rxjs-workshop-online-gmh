@@ -1,0 +1,3 @@
+https://blog.strongbrew.io/safe-http-calls-with-rxjs/
+https://angular.schule/blog/2020-02-rxjs-train-window
+http://conal.net/papers/icfp97/icfp97.pdf
