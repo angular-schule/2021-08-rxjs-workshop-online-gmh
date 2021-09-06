@@ -22,7 +22,10 @@ import { EffectsModule } from '@ngrx/effects';
     BooksModule,
     CounterModule,
     StoreModule.forRoot({}, {}),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
     EffectsModule.forRoot([]),
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'de' }],
