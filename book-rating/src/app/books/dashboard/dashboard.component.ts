@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
+import { loadBooks } from '../+state/books.actions';
+import { selectAllBooks, selectLoading } from '../+state/books.selectors';
 
 import { Book } from '../shared/book';
 import { BookStoreService } from '../shared/book-store.service';
@@ -10,16 +13,14 @@ import { BookStoreService } from '../shared/book-store.service';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  books: Book[] = [];
-  loading$ = of(false); // TODO
-  books$ = of([]); // TODO
+  // books: Book[] = [];
+  loading$ = this.store.select(selectLoading);
+  books$ = this.store.select(selectAllBooks);
 
-  constructor(private bs: BookStoreService) {}
+  constructor(private bs: BookStoreService, private store: Store) {}
 
   ngOnInit() {
-    this.bs.getAll().subscribe(books => {
-      this.books = books;
-    });
+    this.store.dispatch(loadBooks());
   }
 
   rateUp(book: Book) {
@@ -33,9 +34,9 @@ export class DashboardComponent implements OnInit {
   }
 
   updateList(ratedBook: Book) {
-    this.books = this.books.map(b =>
+    /*this.books = this.books.map(b =>
       b.isbn === ratedBook.isbn ? ratedBook : b
-    );
+    );*/
   }
 
   trackBook(index: number, item: Book) {
