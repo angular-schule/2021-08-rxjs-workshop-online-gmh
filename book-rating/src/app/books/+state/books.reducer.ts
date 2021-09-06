@@ -5,15 +5,17 @@ import { Book } from '../shared/book';
 
 export const booksFeatureKey = 'books';
 
-export interface State {
-  books: Book[];
+export interface State extends EntityState<Book> {
   loading: boolean;
 }
 
-export const initialState: State = {
-  books: [],
+export const booksAdapter = createEntityAdapter<Book>({
+  selectId: book => book.isbn,
+});
+
+export const initialState: State = booksAdapter.getInitialState({
   loading: false,
-};
+});
 
 export const reducer = createReducer(
   initialState,
@@ -24,9 +26,8 @@ export const reducer = createReducer(
 
   on(BooksActions.loadBooksSuccess, (state, action): State => {
     return {
-      ...state,
+      ...booksAdapter.setAll(action.data, state),
       loading: false,
-      books: action.data,
     };
   }),
 
