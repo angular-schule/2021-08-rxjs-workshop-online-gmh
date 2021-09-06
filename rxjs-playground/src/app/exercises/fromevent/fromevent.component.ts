@@ -25,7 +25,7 @@ export class FromeventComponent implements OnInit {
     fromEvent(window, 'resize').pipe(
       debounceTime(1000),
       map(() => window.innerWidth),
-      startWith(window.innerWidth),
+      startWith(window.innerWidth)
     ).subscribe(width => {
       this.currentWidth = width;
     })

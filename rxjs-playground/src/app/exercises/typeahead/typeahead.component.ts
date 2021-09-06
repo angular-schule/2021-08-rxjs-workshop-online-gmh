@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { TypeaheadService } from './typeahead.service';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { Book } from './book';
 
 @Component({
@@ -30,8 +30,21 @@ export class TypeaheadComponent {
      */
 
     /******************************/
+    searchInput$.pipe(
+      filter((term: string) => term.length >= 3 || term.length === 0),
+      debounceTime(1000),
+      distinctUntilChanged(),
+      tap(() => this.loading = true),
+      switchMap(term => {
+        if (term.length === 0) {
+          return of([]);
+        } else {
+          return this.ts.search(term);
+        }
+      }),
+      tap(() => this.loading = false),
+    ).subscribe(books => this.results = books);
 
-    
     /******************************/
   }
 

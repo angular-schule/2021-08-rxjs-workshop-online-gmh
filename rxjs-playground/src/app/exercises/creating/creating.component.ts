@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of, from, timer, interval, ReplaySubject } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { Observable, of, from, timer, interval, ReplaySubject, forkJoin } from 'rxjs';
+import { map, filter, delay, concatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'rxw-creating',
@@ -56,14 +56,43 @@ export class CreatingComponent implements OnInit {
       o.complete();
     })*/
 
-    timer(2000, 500).pipe(
+    /*timer(2000, 500).pipe(
       map(e => e * 3),
       filter(e => e % 2 === 0)
     ).subscribe({
       next: e => this.log(e),
       complete: () => this.log('Complete')
-    });
+    });*/
 
+
+    function getAuthor(id: number): Observable<{ name: string }> {
+      const authors = {
+        1: { name: 'Ferdinand Malcher' },
+        2: { name: 'Johannes Hoppe' },
+        3: { name: 'Danny Koppenhagen' }
+      };
+      return of(authors[id] || { name: 'unknown' }).pipe(delay(1000));
+    }
+
+    function getBook() {
+      return of({
+        isbn: '111',
+        title: 'Angular',
+        authorIds: [1, 2]
+      }).pipe(delay(1000));
+    }
+
+
+    getBook().pipe(
+      concatMap(book => forkJoin(book.authorIds.map(id => getAuthor(id))).pipe(
+        map(authors => {
+          return {
+            ...book,
+            authors
+          }
+        })
+      )),
+    ).subscribe(e => console.log(e));
 
 
 
